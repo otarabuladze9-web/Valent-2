@@ -1,21 +1,253 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ka">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Proposal</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #ffcccb; color: #333; }
-        h1 { color: #d50000; }
-        .container { text-align: center; padding: 50px; }
-        .heart { font-size: 100px; color: red; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>მარიამ 💘</title>
+  <meta name="description" content="Will you be my Valentine?" />
+  <style>
+    :root{
+      --bg1:#ff9a9e;
+      --bg2:#fad0c4;
+      --bg3:#fbc2eb;
+      --card: rgba(255,255,255,.82);
+      --text:#111827;
+      --yes:#ff3b6b;
+      --yes2:#ff5aa5;
+      --shadow: 0 18px 70px rgba(0,0,0,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      overflow:hidden;
+      padding:20px;
+    }
+
+    /* floating hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none; opacity:.45}
+    .heart{
+      position:absolute;
+      width:18px;height:18px;
+      transform: rotate(45deg);
+      background: rgba(255, 59, 107, .6);
+      border-radius: 4px;
+      animation: floatUp linear infinite;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .heart:before{left:-9px; top:0}
+    .heart:after{left:0; top:-9px}
+    @keyframes floatUp{
+      from{ transform: translateY(35vh) rotate(45deg); opacity:0}
+      12%{opacity:1}
+      to{ transform: translateY(-120vh) rotate(45deg); opacity:0}
+    }
+
+    .card{
+      width:min(620px, 100%);
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 34px 26px;
+      text-align:center;
+      position:relative;
+    }
+
+    h1{
+      margin: 6px 0 10px;
+      font-size: clamp(28px, 5vw, 46px);
+      line-height:1.05;
+    }
+
+    p{
+      margin: 0 0 18px;
+      font-size: clamp(14px, 2.6vw, 18px);
+      opacity:.8;
+    }
+
+    .face{font-size: 52px; margin-bottom: 8px;}
+    .stage{
+      position:relative;
+      height: 150px;
+      margin-top: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.35);
+    }
+
+    .btn{
+      border:0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 800;
+      cursor:pointer;
+      font-size: 16px;
+      user-select:none;
+      transition: transform .12s ease;
+    }
+    .btn:active{ transform: scale(.97); }
+
+    #yesBtn{
+      background: linear-gradient(135deg, var(--yes), var(--yes2));
+      color:#fff;
+      margin-top: 20px;
+    }
+
+    #noBtn{
+      background:#111827;
+      color:#fff;
+      position:absolute;
+      left:62%;
+      top:80px;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      opacity:.65;
+    }
+
+    /* modal */
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.4);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .modal{
+      width:min(560px, 100%);
+      background:white;
+      border-radius: 22px;
+      padding: 22px 18px;
+      text-align:center;
+    }
+    .ghost{
+      background:white;
+      border:1px solid #ccc;
+      color:#111827;
+      margin-left:8px;
+    }
+    .small{
+      margin-top:10px;
+      font-size:12px;
+      opacity:.7;
+      word-break: break-word;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Will You Be My Valentine?</h1>
-        <div class="heart">❤️</div>
-        <p>I can't imagine my life without you. Would you do me the honor of being my Valentine?</p>
-    </div>
+
+<div class="hearts" id="hearts"></div>
+
+<main class="card">
+  <div class="face" id="face">💘</div>
+  <h1 id="title">მარიამ, იქნები ჩემი ვალენტინი?</h1>
+  <p id="subtitle">ჩემო პატარა… ერთი მნიშვნელოვანი კითხვა 💗</p>
+
+  <div class="stage" id="stage">
+    <button class="btn" id="yesBtn">კი 💖</button>
+    <button class="btn" id="noBtn">არა 😅</button>
+  </div>
+
+  <div class="hint" id="hint">პ.ს. „არა" ღილაკი ცოტა მორცხვია 😄</div>
+</main>
+
+<div class="modalBack" id="modalBack">
+  <div class="modal">
+    <h2>იეეეე!!! 💞</h2>
+    <p>ჩემო პატარა, შენთან ერთად ყველაფერი უკეთესია 💖</p>
+    <button class="btn" id="copyBtn">ტექსტის კოპირება 💌</button>
+    <button class="btn ghost" id="closeBtn">დახურვა</button>
+    <div class="small" id="copyHint"></div>
+  </div>
+</div>
+
+<script>
+// hearts background
+const hearts = document.getElementById("hearts");
+for (let i=0;i<20;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(7+Math.random()*9)+"s";
+  h.style.animationDelay=Math.random()*6+"s";
+  hearts.appendChild(h);
+}
+
+// dodge NO button
+const stage=document.getElementById("stage");
+const noBtn=document.getElementById("noBtn");
+const hint=document.getElementById("hint");
+let dodges=0;
+
+function moveNo(){
+  const r=stage.getBoundingClientRect();
+  const b=noBtn.getBoundingClientRect();
+  const x=Math.random()*(r.width-b.width);
+  const y=Math.random()*(r.height-b.height);
+  noBtn.style.left=x+"px";
+  noBtn.style.top=y+"px";
+  dodges++;
+  if(dodges>2) hint.textContent="ჩემო პატარა… მგონი „კი" უნდა დააჭირო 💗";
+}
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",(e)=>{e.preventDefault();moveNo();},{passive:false});
+noBtn.addEventListener("click",moveNo);
+
+// modal
+const yesBtn=document.getElementById("yesBtn");
+const modalBack=document.getElementById("modalBack");
+const closeBtn=document.getElementById("closeBtn");
+const copyBtn=document.getElementById("copyBtn");
+const copyHint=document.getElementById("copyHint");
+
+yesBtn.onclick=()=>{modalBack.style.display="flex";burst("💖");burst("✨");};
+closeBtn.onclick=()=>{modalBack.style.display="none";};
+modalBack.onclick=(e)=>{if(e.target===modalBack) modalBack.style.display="none";};
+
+copyBtn.onclick=async()=>{
+  const msg="ჩემო პატარა 💗 მარიამ, იქნები ჩემი ვალენტინი? 😘";
+  try{
+    await navigator.clipboard.writeText(msg);
+    copyHint.textContent="კოპირებულია! 💌";
+  }catch{
+    copyHint.textContent=msg;
+  }
+};
+
+// confetti
+function burst(emoji){
+  for(let i=0;i<18;i++){
+    const s=document.createElement("span");
+    s.textContent=emoji;
+    s.style.position="fixed";
+    s.style.left=window.innerWidth/2+"px";
+    s.style.top=window.innerHeight/2+"px";
+    s.style.fontSize=(14+Math.random()*18)+"px";
+    s.style.transition="all 900ms ease";
+    document.body.appendChild(s);
+    setTimeout(()=>{
+      s.style.transform=`translate(${(Math.random()-0.5)*500}px, ${(Math.random()-0.5)*500}px)`;
+      s.style.opacity="0";
+    },10);
+    setTimeout(()=>s.remove(),950);
+  }
+}
+</script>
+
 </body>
 </html>
